@@ -19,10 +19,25 @@
             </v-list-item-icon>
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item>
+          
+          <v-list-item to="/survey1">
+            <v-list-item-icon>
+              <v-icon>mdi-shield</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Survey</v-list-item-title>
+          </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
+
+    <v-main>
+      <v-container fluid>
+        <router-view></router-view>
+      </v-container>
+    </v-main>
   </v-app>
+
+
 </template>
 
 
