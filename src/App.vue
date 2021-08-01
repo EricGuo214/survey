@@ -31,7 +31,7 @@
               <v-icon>mdi-home</v-icon>
               <!--Only icon available-->
             </v-list-item-icon>
-            <v-list-item-title>Teyon Herring</v-list-item-title>
+            <v-list-item-title>Multicultural Survey</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>
