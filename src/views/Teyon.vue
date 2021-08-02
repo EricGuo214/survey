@@ -2,9 +2,7 @@
   <div>
     <div v-if="show === 1">
       <v-card elevation="6" class="mx-auto" max-width="600">
-        <p class="text-h6 font-weight-bold pa-4">
-          Race/Ethnicity (Input other information before checking the box)
-        </p>
+        <p class="text-h6 font-weight-bold pa-4">Race/Ethnicity (Required)</p>
         <v-row>
           <v-col class="ml-6 mt-n4 md2" :cols="11">
             <v-checkbox
@@ -159,21 +157,21 @@
             </v-card>
           </div>
           <div>
-            <v-card elevation="6" class="mx-auto mt-8" v-for="p in 25" :key="p">
+            <v-card
+              elevation="6"
+              class="mx-auto mt-8"
+              v-for="(strong, p) in strongly"
+              :key="p"
+            >
               <v-row>
-                <v-radio-group v-model="radioGroup4" row>
+                <v-radio-group :v-model="strong" row>
                   <v-col
                     class="ml-4"
                     cols="1.5"
                     v-for="(rating, i) in ratings"
                     :key="i"
                   >
-                    <v-radio
-                      :v-model="`${radp}`"
-                      :key="p"
-                      :label="`${rating}`"
-                      :value="`${rating}`"
-                    >
+                    <v-radio :key="p" :label="`${rating}`" :value="`${rating}`">
                     </v-radio>
                   </v-col>
                 </v-radio-group>
@@ -219,7 +217,7 @@
                 :key="p"
               >
                 <v-row>
-                  <v-radio-group v-model="radioGroup5" row>
+                  <v-radio-group :v-model="`intense_${p}`" row>
                     <v-col class="ml-4" cols="1.5" v-for="p in 7" :key="p">
                       <v-radio
                         class="mr-8"
@@ -245,10 +243,33 @@
         </v-card-title>
       </v-card>
     </div>
+    <div class="mt-8">
+      <v-alert type="error" v-if="error === true">
+        Please input a response
+      </v-alert>
+    </div>
+
     <v-row class="mb-8" id="top-margin" justify="space-around">
-      <v-btn v-if="show <= 9" right class="text-right" @click="show = func()"
-        >Next</v-btn
-      >
+      <v-btn
+        v-if="show <= 8"
+        right
+        class="text-right"
+        @click="
+          checker();
+          show = func();
+        "
+        >Next
+      </v-btn>
+      <v-btn
+        v-if="show === 9"
+        right
+        class="text-right"
+        @click="
+          checker();
+          show = func();
+        "
+        >Submit
+      </v-btn>
     </v-row>
     <div></div>
   </div>
@@ -256,7 +277,7 @@
 
 <script>
 //import RadioButton from "@/components/RadioButton.vue";
-
+// add checker function back to NEXT button
 export default {
   components: {},
   name: "Teyon",
@@ -313,10 +334,40 @@ export default {
       "Over 60 years",
     ],
     Race: [],
-    radioGroup: 0,
-    radioGroup2: 0,
-    radioGroup3: 0,
-    radioGroup4: 0,
+    radioGroup: null,
+    radioGroup2: null,
+    radioGroup3: null,
+    radioGroup4: null,
+    radioGroup5: null,
+    strongly: [
+      "radio1",
+      "radio2",
+      "radio3",
+      "radio4",
+      "radio5",
+      "radio6",
+      "radio7",
+      "radio8",
+      "radio9",
+      "radio10",
+      "radio11",
+      "radio12",
+      "radio13",
+      "radio14",
+      "radio15",
+      "radio16",
+      "radio17",
+      "radio18",
+      "radio19",
+      "radio20",
+      "radio21",
+      "radio22",
+      "radio23",
+      "radio24",
+      "radio25",
+    ],
+    radio1: 1,
+    radio2: 2,
     raceText: "",
     sexText: "",
     text2: "",
@@ -325,6 +376,7 @@ export default {
     enabled: false,
     show: 1,
     place: 2,
+    error: false,
   }),
   methods: {
     func() {
@@ -341,6 +393,53 @@ export default {
         }
         return this.radioGroup;
       }
+    },
+    checker() {
+      switch (this.show) {
+        case 1:
+          if (this.Race.length === 0) {
+            this.place--;
+            this.error = true;
+            return 0;
+          }
+          break;
+        case 2:
+          if (this.radioGroup === null) {
+            this.place--;
+            this.error = true;
+            return 0;
+          }
+          break;
+        case 3:
+          if (this.radioGroup2 === null) {
+            this.place--;
+            this.error = true;
+            return 0;
+          }
+          break;
+        case 4:
+          if (this.radioGroup3 === null) {
+            this.place--;
+            this.error = true;
+            return 0;
+          }
+          break;
+        case 6:
+          if (this.text3 === "") {
+            this.place--;
+            this.error = true;
+            return 0;
+          }
+          break;
+        case 7:
+          if (this.text4 === "") {
+            this.place--;
+            this.error = true;
+            return 0;
+          }
+          break;
+      }
+      this.error = false;
     },
   },
 
