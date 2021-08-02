@@ -23,7 +23,7 @@
             <v-list-item-icon>
               <v-icon>mdi-shield</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Survey</v-list-item-title>
+            <v-list-item-title>Multisensory Survey</v-list-item-title>
           </v-list-item>
 
           <v-list-item to="/teyon">
@@ -46,7 +46,21 @@
 </template>
 
 
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="/__/firebase/8.8.0/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="/__/firebase/8.8.0/firebase-analytics.js"></script>
+
+<!-- Initialize Firebase -->
+<script src="/__/firebase/init.js"></script>
+
 <script>
+const firebase = require("firebase");
+// Required for side-effects
+require("firebase/firestore");
+
 export default {
   data() {
     return {
@@ -56,6 +70,8 @@ export default {
   },
 };
 </script>
+
+
 
 
 
