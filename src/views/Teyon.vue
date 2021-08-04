@@ -1,5 +1,20 @@
 <template>
   <div>
+    <div>
+      <v-card elevation="6" class="mx-auto" max-width="600" v-if="show === 0">
+        <p class="text-h6 font-weight-bold pa-4">Please enter your name</p>
+        <v-form>
+          <v-text-field
+            v-model="clientName"
+            dense
+            :rules="[(v) => !!v || 'This field is required']"
+            label="Full name"
+            outlined
+            required
+          ></v-text-field>
+        </v-form>
+      </v-card>
+    </div>
     <div v-if="show === 1">
       <v-card elevation="6" class="mx-auto" max-width="600">
         <p class="text-h6 font-weight-bold pa-4">Race/Ethnicity (Required)</p>
@@ -18,7 +33,7 @@
                 class="pa-3 shrink mr-2 mt-0"
                 v-model="Race"
                 label="Other:"
-                :value="textInput"
+                value="Other"
                 hide-details
               ></v-checkbox>
               <v-text-field label="" v-model="raceText"> </v-text-field>
@@ -42,10 +57,10 @@
             <v-row align="center">
               <v-radio
                 class="pa-3 shrink mr-n3 mt-2"
-                :value="textInput2"
+                value="Other2"
                 hide-details
               ></v-radio>
-              <v-text-field v-model="sexText" label="Other..."> </v-text-field>
+              <v-text-field v-model="Stext" label="Other..."> </v-text-field>
             </v-row>
           </v-col>
         </v-radio-group>
@@ -160,18 +175,23 @@
             <v-card
               elevation="6"
               class="mx-auto mt-8"
-              v-for="(strong, p) in strongly"
+              v-for="(strong, p) in 25"
               :key="p"
             >
               <v-row>
-                <v-radio-group :v-model="strong" row>
+                <v-radio-group :v-model="`radio${p}`" row>
                   <v-col
                     class="ml-4"
                     cols="1.5"
                     v-for="(rating, i) in ratings"
                     :key="i"
                   >
-                    <v-radio :key="p" :label="`${rating}`" :value="`${rating}`">
+                    <v-radio
+                      :key="p"
+                      :label="`${rating}`"
+                      :value="`${rating}`"
+                      @change="valueGet(rating, p)"
+                    >
                     </v-radio>
                   </v-col>
                 </v-radio-group>
@@ -221,10 +241,11 @@
                     <v-col class="ml-4" cols="1.5" v-for="p in 7" :key="p">
                       <v-radio
                         class="mr-8"
-                        :v-model="`${radp}`"
+                        :v-model="`rad${p}`"
                         :key="p"
                         :label="`${p}`"
                         :value="`${p}`"
+                        @change="valueGet2(p, p)"
                       >
                       </v-radio>
                     </v-col>
@@ -247,6 +268,9 @@
       <v-alert type="error" v-if="error === true">
         Please input a response
       </v-alert>
+      <v-alert type="error" v-if="sError === true">
+        Please answer all multiple choice
+      </v-alert>
     </div>
 
     <v-row class="mb-8" id="top-margin" justify="space-around">
@@ -255,6 +279,7 @@
         right
         class="text-right"
         @click="
+          nameC();
           checker();
           show = func();
         "
@@ -278,6 +303,7 @@
 <script>
 //import RadioButton from "@/components/RadioButton.vue";
 // add checker function back to NEXT button
+import firebase from "firebase";
 export default {
   components: {},
   name: "Teyon",
@@ -334,51 +360,85 @@ export default {
       "Over 60 years",
     ],
     Race: [],
+    vault: [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+    ],
+    storage: [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+    ],
     radioGroup: null,
     radioGroup2: null,
     radioGroup3: null,
     radioGroup4: null,
     radioGroup5: null,
-    strongly: [
-      "radio1",
-      "radio2",
-      "radio3",
-      "radio4",
-      "radio5",
-      "radio6",
-      "radio7",
-      "radio8",
-      "radio9",
-      "radio10",
-      "radio11",
-      "radio12",
-      "radio13",
-      "radio14",
-      "radio15",
-      "radio16",
-      "radio17",
-      "radio18",
-      "radio19",
-      "radio20",
-      "radio21",
-      "radio22",
-      "radio23",
-      "radio24",
-      "radio25",
-    ],
-    radio1: 1,
-    radio2: 2,
+    clientName: "",
     raceText: "",
-    sexText: "",
+    Stext: "",
     text2: "",
     text3: "",
     text4: "",
     enabled: false,
-    show: 1,
+    show: 0,
     place: 2,
+    start: 0,
     error: false,
+    sError: false,
   }),
   methods: {
+    valueGet(val, number) {
+      this.vault[number] = val;
+    },
+    valueGet2(val, number) {
+      this.storage[number] = val;
+    },
     func() {
       if (this.place + 1 >= 11) {
         return this.place;
@@ -394,17 +454,45 @@ export default {
         return this.radioGroup;
       }
     },
+    nameC() {
+      if (this.clientName === "") {
+        console.log();
+      }
+    },
     checker() {
       switch (this.show) {
+        case 0:
+          if (this.clientName === "") {
+            if (this.start === 0) {
+              this.start++;
+              this.place = this.place - 1;
+            }
+            this.place--;
+            console.log(this.place);
+            return 0;
+          }
+          break;
         case 1:
           if (this.Race.length === 0) {
             this.place--;
             this.error = true;
             return 0;
           }
+          for (let i = 0; i < this.Race.length; i++) {
+            if (this.Race[i] === "Other" && this.raceText === "") {
+              this.place--;
+              this.error = true;
+              return 0;
+            }
+          }
           break;
         case 2:
           if (this.radioGroup === null) {
+            this.place--;
+            this.error = true;
+            return 0;
+          }
+          if (this.radioGroup === "Other2" && this.Stext === "") {
             this.place--;
             this.error = true;
             return 0;
@@ -438,8 +526,38 @@ export default {
             return 0;
           }
           break;
+        case 8:
+          for (let i = 0; i < this.vault.length; i++) {
+            if (this.vault[i] === "") {
+              this.place--;
+              this.sError = true;
+              return 0;
+            }
+          }
+          break;
+        case 9:
+          for (let i = 0; i < this.vault.length; i++) {
+            if (this.vault[i] === "") {
+              this.place--;
+              this.sError = true;
+              return 0;
+            }
+          }
       }
       this.error = false;
+      this.sError = false;
+    },
+    submit() {
+      var db = firebase.firestore();
+      var respondeeName = this.name;
+      db.collection("Responses").doc(respondeeName).set({
+        name: this.clientName,
+        // Need to add the rest of my database information
+        culturalGroup: this.culturalGroup,
+        favoriteSmell: this.favoriteSmell,
+        gender: this.gender,
+        smellStrength: this.slider,
+      });
     },
   },
 
