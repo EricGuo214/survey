@@ -238,14 +238,14 @@
               >
                 <v-row>
                   <v-radio-group :v-model="`intense_${p}`" row>
-                    <v-col class="ml-4" cols="1.5" v-for="p in 7" :key="p">
+                    <v-col class="ml-4" cols="1.5" v-for="j in 7" :key="j">
                       <v-radio
                         class="mr-8"
                         :v-model="`rad${p}`"
                         :key="p"
-                        :label="`${p}`"
-                        :value="`${p}`"
-                        @change="valueGet2(p, p)"
+                        :label="`${j}`"
+                        :value="`${j}`"
+                        @change="valueGet2(j, p)"
                       >
                       </v-radio>
                     </v-col>
@@ -279,7 +279,7 @@
         right
         class="text-right"
         @click="
-          nameC();
+          //nameC();
           checker();
           show = func();
         "
@@ -290,8 +290,10 @@
         right
         class="text-right"
         @click="
+          fill();
           checker();
           show = func();
+          submit();
         "
         >Submit
       </v-btn>
@@ -427,7 +429,7 @@ export default {
     text4: "",
     enabled: false,
     show: 0,
-    place: 2,
+    place: 1,
     start: 0,
     error: false,
     sError: false,
@@ -436,8 +438,12 @@ export default {
     valueGet(val, number) {
       this.vault[number] = val;
     },
+    rand() {
+      // Unused test feature still being worked on
+      Math.random() * 8 + 1;
+    },
     valueGet2(val, number) {
-      this.storage[number] = val;
+      this.storage[number - 1] = val;
     },
     func() {
       if (this.place + 1 >= 11) {
@@ -454,11 +460,6 @@ export default {
         return this.radioGroup;
       }
     },
-    nameC() {
-      if (this.clientName === "") {
-        console.log();
-      }
-    },
     checker() {
       switch (this.show) {
         case 0:
@@ -468,7 +469,6 @@ export default {
               this.place = this.place - 1;
             }
             this.place--;
-            console.log(this.place);
             return 0;
           }
           break;
@@ -526,7 +526,7 @@ export default {
             return 0;
           }
           break;
-        case 8:
+        case 8: // Make case 8 when done debugging
           for (let i = 0; i < this.vault.length; i++) {
             if (this.vault[i] === "") {
               this.place--;
@@ -536,27 +536,42 @@ export default {
           }
           break;
         case 9:
-          for (let i = 0; i < this.vault.length; i++) {
-            if (this.vault[i] === "") {
+          for (let i = 0; i < this.storage.length; i++) {
+            if (this.storage[i] === "") {
               this.place--;
               this.sError = true;
               return 0;
             }
           }
+          break;
       }
       this.error = false;
       this.sError = false;
     },
+    fill() {
+      for (let i = 0; i < this.vault.length; i++) {
+        let string = `${this.items[i]}: ${this.vault[i]}`;
+        this.vault[i] = string;
+      }
+      for (let i = 0; i < this.storage.length; i++) {
+        let string = `${this.items[i]}: ${this.storage[i]}`;
+        this.storage[i] = string;
+      }
+    },
     submit() {
       var db = firebase.firestore();
-      var respondeeName = this.name;
-      db.collection("Responses").doc(respondeeName).set({
+      var respondeeName = this.clientName;
+      db.collection("Multicultural Responses").doc(respondeeName).set({
         name: this.clientName,
-        // Need to add the rest of my database information
-        culturalGroup: this.culturalGroup,
-        favoriteSmell: this.favoriteSmell,
-        gender: this.gender,
-        smellStrength: this.slider,
+        raceEthnicity: this.Race,
+        Age: this.radioGroup,
+        Sex: this.radioGroup2,
+        MedicalAilments: this.radioGroup3,
+        MedicalAilmentsInfo: this.text2,
+        cultureGroup: this.text3,
+        region: this.text4,
+        strongly: this.vault,
+        intensely: this.storage,
       });
     },
   },
