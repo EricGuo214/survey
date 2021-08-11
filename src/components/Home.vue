@@ -1,94 +1,33 @@
 <template>
   <v-container>
     <v-row class="text-center">
-
       <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Olfaction Surveys
-        </h1>
-
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
-        </p>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Important Links
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
+        <h1 class="display-2 font-weight-bold mb-3">Olfaction Surveys</h1>
+        <v-card elevation="4" class="mx-auto pa-3" max-width="750">
+          <p class="subheading font-weight-regular" style="text-align: left">
+            Surprisingly, multiple people in the same room within the same
+            environment/atmosphere, inhaling the same smell molecules in the
+            air, can have differing opinions about its smell, whether it be its
+            pleasantness, intensity, or similarity to other odors.<br />
+            <br />
+            This is a preliminary survey about smell perception, which will
+            someday be applied to better understand smell experiences,
+            multisensory interactions, and its contributions to technology.<br />
+            <br />
+            Disclaimer: Your participation in this survey means that you consent
+            for your responses to be used as data for our study. Your responses
+            will be anonymous.
+          </p></v-card
+        >
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-  export default {
-    name: 'HelloWorld',
+export default {
+  name: "HelloWorld",
 
-    data: () => ({
-      
-    }),
-  }
+  data: () => ({}),
+};
 </script>

@@ -42,7 +42,7 @@
         </v-row>
       </v-card>
     </div>
-    <div id="top-margin" v-if="show === 2">
+    <div id="top-margin" v-if="show === 1">
       <v-card elevation="6" class="mx-auto" max-width="600">
         <p class="text-h6 font-weight-bold pa-4">Sex</p>
         <v-radio-group v-model="radioGroup">
@@ -66,7 +66,7 @@
         </v-radio-group>
       </v-card>
     </div>
-    <div id="top-margin" v-if="show === 3">
+    <div id="top-margin" v-if="show === 1">
       <v-card elevation="6" class="mx-auto" max-width="600">
         <p class="text-h6 font-weight-bold pa-4 mb-n4">Age</p>
         <v-radio-group v-model="radioGroup2">
@@ -83,7 +83,7 @@
         </v-radio-group>
       </v-card>
     </div>
-    <div id="top-margin" v-if="show === 4">
+    <div id="top-margin" v-if="show === 1">
       <v-card elevation="6" class="mx-auto text-justify" max-width="600">
         <p class="text-h6 font-weight-bold pa-4">
           Have you suffered from/do you have any diseases or medical ailments
@@ -108,7 +108,7 @@
         </v-radio-group>
       </v-card>
     </div>
-    <div id="top-margin" v-if="show === 5">
+    <div id="top-margin" v-if="show === 1">
       <v-card elevation="6" class="mx-auto" max-width="600">
         <p class="text-h6 font-weight-bold pa-4">
           If you answered "yes" for the previous question and if you are
@@ -121,7 +121,7 @@
         </v-col>
       </v-card>
     </div>
-    <div id="top-margin" v-if="show === 6">
+    <div id="top-margin" v-if="show === 1">
       <v-card elevation="6" class="mx-auto" max-width="600">
         <p class="text-h6 font-weight-bold pa-4">
           Which broad cultural group(s) do you identify with? (Examples: Middle
@@ -133,7 +133,7 @@
         </v-col>
       </v-card>
     </div>
-    <div id="top-margin" v-if="show === 7">
+    <div id="top-margin" v-if="show === 1">
       <v-card elevation="6" class="mx-auto" max-width="600">
         <p class="text-h6 font-weight-bold pa-4">
           If you are from the U.S., which region are you from? (ex. the Midwest,
@@ -145,7 +145,7 @@
         </v-col>
       </v-card>
     </div>
-    <v-card id="top-margin" v-if="show === 8">
+    <v-card id="top-margin" v-if="show === 2">
       <v-row>
         <v-col cols="3">
           <div id="sp2-align">
@@ -202,7 +202,7 @@
       </v-row>
     </v-card>
     <div>
-      <v-card id="top-margin" v-if="show === 9">
+      <v-card class="d-flex align-start" id="top-margin" v-if="show === 3">
         <v-row>
           <v-col cols="3">
             <div id="sp-align">
@@ -257,7 +257,7 @@
         </v-row>
       </v-card>
     </div>
-    <div v-if="show === 10">
+    <div v-if="show === 4">
       <v-card elevation="6" class="mx-auto mt-8" max-width="600">
         <v-card-title>
           You have completed the survey, you may now exit the page
@@ -275,25 +275,22 @@
 
     <v-row class="mb-8" id="top-margin" justify="space-around">
       <v-btn
-        v-if="show <= 8"
+        v-if="show <= 2"
         right
         class="text-right"
         @click="
-          //nameC();
           checker();
           show = func();
         "
         >Next
       </v-btn>
       <v-btn
-        v-if="show === 9"
+        v-if="show === 3"
         right
         class="text-right"
         @click="
-          fill();
           checker();
           show = func();
-          submit();
         "
         >Submit
       </v-btn>
@@ -305,6 +302,7 @@
 <script>
 //import RadioButton from "@/components/RadioButton.vue";
 // add checker function back to NEXT button
+// Add submit button
 import firebase from "firebase";
 export default {
   components: {},
@@ -466,7 +464,6 @@ export default {
           if (this.clientName === "") {
             if (this.start === 0) {
               this.start++;
-              this.place = this.place - 1;
             }
             this.place--;
             return 0;
@@ -485,8 +482,6 @@ export default {
               return 0;
             }
           }
-          break;
-        case 2:
           if (this.radioGroup === null) {
             this.place--;
             this.error = true;
@@ -497,36 +492,28 @@ export default {
             this.error = true;
             return 0;
           }
-          break;
-        case 3:
           if (this.radioGroup2 === null) {
             this.place--;
             this.error = true;
             return 0;
           }
-          break;
-        case 4:
           if (this.radioGroup3 === null) {
             this.place--;
             this.error = true;
             return 0;
           }
-          break;
-        case 6:
           if (this.text3 === "") {
             this.place--;
             this.error = true;
             return 0;
           }
-          break;
-        case 7:
           if (this.text4 === "") {
             this.place--;
             this.error = true;
             return 0;
           }
           break;
-        case 8: // Make case 8 when done debugging
+        case 2:
           for (let i = 0; i < this.vault.length; i++) {
             if (this.vault[i] === "") {
               this.place--;
@@ -535,7 +522,7 @@ export default {
             }
           }
           break;
-        case 9:
+        case 3:
           for (let i = 0; i < this.storage.length; i++) {
             if (this.storage[i] === "") {
               this.place--;
@@ -543,6 +530,7 @@ export default {
               return 0;
             }
           }
+          this.fill();
           break;
       }
       this.error = false;
