@@ -145,7 +145,7 @@
         </v-col>
       </v-card>
     </div>
-    <v-card id="top-margin" v-if="show === 2">
+    <v-card id="top-margin" v-if="table === 0" elevation="0">
       <v-row>
         <v-col cols="3">
           <div id="sp2-align">
@@ -155,6 +155,7 @@
               :key="i"
               class="mx-auto"
               max-width="300"
+              height="100%"
             >
               <p id="s-align" class="text-body-1 font-weight-medium pa-4">
                 {{ item }}
@@ -176,6 +177,7 @@
               elevation="6"
               class="mx-auto mt-8"
               v-for="(strong, p) in 25"
+              absolute
               :key="p"
             >
               <v-row>
@@ -202,7 +204,12 @@
       </v-row>
     </v-card>
     <div>
-      <v-card class="d-flex align-start" id="top-margin" v-if="show === 3">
+      <v-card
+        class="d-flex align-start"
+        id="top-margin"
+        v-if="table === 1"
+        elevation="0"
+      >
         <v-row>
           <v-col cols="3">
             <div id="sp-align">
@@ -279,8 +286,10 @@
         right
         class="text-right"
         @click="
+          rand();
           checker();
           show = func();
+          order();
         "
         >Next
       </v-btn>
@@ -291,6 +300,7 @@
         @click="
           checker();
           show = func();
+          order();
         "
         >Submit
       </v-btn>
@@ -302,7 +312,8 @@
 <script>
 //import RadioButton from "@/components/RadioButton.vue";
 // add checker function back to NEXT button
-// Add submit button
+// Add submit button back
+// Put item and chart in a card and align those so we can have constant, perfect alignment in theory
 import firebase from "firebase";
 export default {
   components: {},
@@ -335,6 +346,7 @@ export default {
       "Oregano",
       "Parsley",
     ],
+    items2: [],
     ratings: [
       "Strongly dislike",
       "Somewhat dislike",
@@ -420,6 +432,7 @@ export default {
     radioGroup4: null,
     radioGroup5: null,
     clientName: "",
+    run: true,
     raceText: "",
     Stext: "",
     text2: "",
@@ -427,6 +440,7 @@ export default {
     text4: "",
     enabled: false,
     show: 0,
+    table: 2,
     place: 1,
     start: 0,
     error: false,
@@ -436,9 +450,31 @@ export default {
     valueGet(val, number) {
       this.vault[number] = val;
     },
+    order() {
+      if (this.show === 2) {
+        this.table = parseInt(Math.random() * 2);
+      }
+      if (this.show === 3 && this.table === 0) {
+        this.table = 1;
+      } else if (this.show === 3 && this.table === 1) {
+        this.table = 0;
+      }
+      if (this.show === 4) {
+        this.table = 2;
+      }
+      console.log("table", this.table);
+    },
     rand() {
-      // Unused test feature still being worked on
-      Math.random() * 8 + 1;
+      // Feature completed
+      if (this.show === 2 && this.run === true) {
+        let x;
+        for (let i = 25; i >= 1; i--) {
+          x = parseInt(Math.random() * i);
+          this.items2.push(this.items.splice(x, 1)[0]);
+        }
+        this.items = this.items2;
+        this.run = false;
+      }
     },
     valueGet2(val, number) {
       this.storage[number - 1] = val;
@@ -469,7 +505,7 @@ export default {
             return 0;
           }
           break;
-        case 1:
+        case 5:
           if (this.Race.length === 0) {
             this.place--;
             this.error = true;
@@ -513,7 +549,7 @@ export default {
             return 0;
           }
           break;
-        case 2:
+        case 6:
           for (let i = 0; i < this.vault.length; i++) {
             if (this.vault[i] === "") {
               this.place--;
@@ -522,7 +558,7 @@ export default {
             }
           }
           break;
-        case 3:
+        case 9:
           for (let i = 0; i < this.storage.length; i++) {
             if (this.storage[i] === "") {
               this.place--;
@@ -542,7 +578,7 @@ export default {
         this.vault[i] = string;
       }
       for (let i = 0; i < this.storage.length; i++) {
-        let string = `${this.items[i]}: ${this.storage[i]}`;
+        let string = `${this.items2[i]}: ${this.storage[i]}`;
         this.storage[i] = string;
       }
     },
