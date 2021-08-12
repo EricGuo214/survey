@@ -1,5 +1,8 @@
 <template>
   <div>
+    <span>{{ minutes }}</span>
+    <span>:</span>
+    <span>{{ seconds }}</span>
     <div>
       <v-card elevation="6" class="mx-auto" max-width="600" v-if="show === 0">
         <p class="text-h6 font-weight-bold pa-4">Please enter your name</p>
@@ -290,6 +293,8 @@
           checker();
           show = func();
           order();
+          resetTimer();
+          startTimer();
         "
         >Next
       </v-btn>
@@ -301,6 +306,9 @@
           checker();
           show = func();
           order();
+          resetTimer();
+          startTimer();
+          submit();
         "
         >Submit
       </v-btn>
@@ -311,9 +319,7 @@
 
 <script>
 //import RadioButton from "@/components/RadioButton.vue";
-// add checker function back to NEXT button
 // Add submit button back
-// Put item and chart in a card and align those so we can have constant, perfect alignment in theory
 import firebase from "firebase";
 export default {
   components: {},
@@ -431,8 +437,12 @@ export default {
     radioGroup3: null,
     radioGroup4: null,
     radioGroup5: null,
+    timer: null,
+    totalTime: 1 * 60,
     clientName: "",
     run: true,
+    run2: true,
+    done: false,
     raceText: "",
     Stext: "",
     text2: "",
@@ -446,27 +456,71 @@ export default {
     error: false,
     sError: false,
   }),
+  mounted() {
+    //this.startTimer();
+    //Anything in this gets started as soon as the page loads
+  },
+  computed: {
+    minutes: function () {
+      const minutes = Math.floor(this.totalTime / 60);
+      return this.padTime(minutes);
+    },
+    seconds: function () {
+      const seconds = this.totalTime - this.minutes * 60;
+      return this.padTime(seconds);
+    },
+  },
   methods: {
     valueGet(val, number) {
       this.vault[number] = val;
     },
-    order() {
-      if (this.show === 2) {
-        this.table = parseInt(Math.random() * 2);
+    startTimer() {
+      this.timer = setInterval(() => this.countdown(), 1000);
+    },
+    resetTimer() {
+      let x = 60;
+      if (this.show === 0) {
+        x = 60;
+      } else if (this.show === 1) {
+        x = 60 * 3;
+      } else if (this.show === 2 || this.show === 3) {
+        x = 60 * 5;
       }
-      if (this.show === 3 && this.table === 0) {
+      this.totalTime = x;
+      clearInterval(this.timer);
+      this.timer = null;
+    },
+    padTime: function (time) {
+      return (time < 10 ? "0" : "") + time;
+    },
+    countdown() {
+      if (this.totalTime >= 1) {
+        this.totalTime--;
+      } else {
+        this.totalTime = 0;
+        this.resetTimer();
+        // Make whatever needs to happen once inactivity limit hits here
+      }
+    },
+    order() {
+      if (this.show === 2 && this.run2 === true) {
+        this.table = parseInt(Math.random() * 2);
+        this.run2 = false;
+      }
+      if (this.show === 3 && this.table === 0 && this.done === false) {
         this.table = 1;
-      } else if (this.show === 3 && this.table === 1) {
+        this.done = true;
+      } else if (this.show === 3 && this.table === 1 && this.done === false) {
         this.table = 0;
+        this.done = true;
       }
       if (this.show === 4) {
         this.table = 2;
       }
-      console.log("table", this.table);
     },
     rand() {
       // Feature completed
-      if (this.show === 2 && this.run === true) {
+      if (this.show === 1 && this.run === true) {
         let x;
         for (let i = 25; i >= 1; i--) {
           x = parseInt(Math.random() * i);
@@ -505,7 +559,7 @@ export default {
             return 0;
           }
           break;
-        case 5:
+        case 1:
           if (this.Race.length === 0) {
             this.place--;
             this.error = true;
@@ -549,21 +603,37 @@ export default {
             return 0;
           }
           break;
-        case 6:
+        case 2:
           for (let i = 0; i < this.vault.length; i++) {
-            if (this.vault[i] === "") {
-              this.place--;
-              this.sError = true;
-              return 0;
+            if (this.table === 0) {
+              if (this.vault[i] === "") {
+                this.place--;
+                this.sError = true;
+                return 0;
+              }
+            } else if (this.table === 1) {
+              if (this.storage[i] === "") {
+                this.place--;
+                this.sError = true;
+                return 0;
+              }
             }
           }
           break;
-        case 9:
+        case 3:
           for (let i = 0; i < this.storage.length; i++) {
-            if (this.storage[i] === "") {
-              this.place--;
-              this.sError = true;
-              return 0;
+            if (this.table === 0) {
+              if (this.vault[i] === "") {
+                this.place--;
+                this.sError = true;
+                return 0;
+              }
+            } else if (this.table === 1) {
+              if (this.storage[i] === "") {
+                this.place--;
+                this.sError = true;
+                return 0;
+              }
             }
           }
           this.fill();
@@ -583,6 +653,9 @@ export default {
       }
     },
     submit() {
+      if (this.show != 4) {
+        return 0;
+      }
       var db = firebase.firestore();
       var respondeeName = this.clientName;
       db.collection("Multicultural Responses").doc(respondeeName).set({
