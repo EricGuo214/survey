@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "surveyui-d5c7d"
+  },
+  "targets": {
+    "surveyui-d5c7d": {
+      "hosting": {
+        "stem-survey": [
+          "stem-survey"
+        ]
+      }
+    }
+  }
+}
