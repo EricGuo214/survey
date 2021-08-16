@@ -166,7 +166,7 @@
             </v-card-text>
           </v-card>
         </v-list>
-        <v-btn color="primary" @click="submit"> Submit</v-btn>
+        <v-btn color="primary"> Submit</v-btn>
       </v-form>
     </div>
   </body>
