@@ -1,8 +1,5 @@
 <template>
   <div>
-    <span>{{ minutes }}</span>
-    <span>:</span>
-    <span>{{ seconds }}</span>
     <div>
       <v-card elevation="6" class="mx-auto" max-width="600" v-if="show === 0">
         <p class="text-h6 font-weight-bold pa-4">Please enter your name</p>
@@ -308,7 +305,7 @@
           order();
           resetTimer();
           startTimer();
-          submit();
+          //submit();
         "
         >Submit
       </v-btn>
